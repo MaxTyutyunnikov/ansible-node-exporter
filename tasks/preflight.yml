@@ -209,7 +209,10 @@
         node_exporter_checksum: "{{ item.split(' ')[0] }}"
       with_items: "{{ _checksums }}"
       when:
-        - ( "{{ ansible_system |lower }}" + "-" + go_arch + '.tar.gz') in item
+        - "( (ansible_system|lower) + '-' + go_arch + '.tar.gz') in item"
+      tags:
+        - node_exporter_install
+        - skip_ansible_lint
 
     - name: "Get checksum for {{ go_arch }} architecture - Windows"
       set_fact:
