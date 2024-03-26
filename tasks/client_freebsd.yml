@@ -1,0 +1,31 @@
+---
+
+# Installation on FreeBSD is currently much simpler than the other operating systems.
+# Could potentially be expanded later if necessary.
+
+- name: Install packages
+  ansible.builtin.package:
+    name: bash
+    state: present
+
+- name: Install node_exporter
+  ansible.builtin.package:
+    name: node_exporter
+    state: present
+
+- name: Enable node_exporter in /etc/rc.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rc.conf
+    regexp: '^node_exporter_enable='
+    line: node_exporter_enable="YES"
+
+- name: Ensure node_exporter is running
+  command: |
+    /usr/local/etc/rc.d/node_exporter start
+  changed_when: false
+  ignore_errors: true
+
+- name: End the play for hosts that run FreeBSD
+  ansible.builtin.meta: end_host
+  when:
+  - ansible_distribution == 'FreeBSD'

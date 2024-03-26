@@ -29,7 +29,9 @@ ExecStart={{ _node_exporter_binary_install_dir }}/node_exporter \
     --web.listen-address={{ node_exporter_web_listen_address }} \
     --web.telemetry-path={{ node_exporter_web_telemetry_path }}
 
-SyslogIdentifier=node_exporter
+SyslogIdentifier={{ node_exporter_systemd_syslog_identifier }}
+StandardOutput={{ node_exporter_systemd_standard_output }}
+StandardError={{ node_exporter_systemd_standard_error }}
 Restart=always
 RestartSec=1
 StartLimitInterval=0
