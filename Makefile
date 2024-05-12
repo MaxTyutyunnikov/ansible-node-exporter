@@ -1,17 +1,19 @@
 .DEFAULT_GOAL:=help
-.PHONY: all help clean release major minor patch
+.PHONY: all help clean release major minor patch update
 .PRECIOUS:
 .ONESHELL:
 SHELL:=/bin/bash
 VERSION_MK:=0.0.1
 
-VERSION:=$(shell git describe --abbrev=0 --tags)
-CURRENT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD)
+VERSION:=$(shell git describe --abbrev=0 --tags 2> /dev/null)
+CURRENT_BRANCH:=$(shell git rev-parse --abbrev-ref HEAD 2> /dev/null)
 NAME:=$(shell [ -e .registry ] && cat .registry)
 MKNAME:=$(firstword $(MAKEFILE_LIST))
 
 all:
 	@echo ==============================================
+	@[ -n "$$PRE_COMMIT" ] && echo "-n PRE_COMMIT $$PRE_COMMIT"
+	@[ -z "$$PRE_COMMIT" ] && echo "-z PRE_COMMIT ask"
 	@echo MAKEFILE_LIST: ${MAKEFILE_LIST}
 	@echo MAKE: $(MAKE)
 	@echo MAKEFILE_LIST_CHILD: ${MAKEFILE_LIST_CHILD}
@@ -26,14 +28,12 @@ git_commit_common::
 	@[ -n "$$PRE" ] && exit 0
 	@echo === git commit common =====================================
 	@git add .
-#	@git commit -a -m "Auto" || true
-	@git commit -a || true
+	@[ -n "$$PRE_COMMIT" ] && (git commit -a -m "$$PRE_COMMIT" || true)
+	@[ -n "$$PRE_COMMIT" ] && (git commit -a || true)
 
 git_push_common:: git_commit_common
 	@[ -n "$$PRE" ] && exit 0
 	@echo === git push common =======================================
-#	@git push --all || true
-#	@git push --tags || true
 	@git push --all 2>/dev/null || true
 	@git push --tags 2>/dev/null || true
 
