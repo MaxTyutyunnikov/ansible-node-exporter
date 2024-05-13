@@ -22,7 +22,7 @@ all:
 -include mkfiles/*.mk
 
 bootstrap_common::
-	@[ -n "$$PRE" ] && exit 0
+	@[ -n "$$PRE_BOOTSTRAP" ] && exit 0
 
 git_commit_common::
 	@[ -n "$$PRE" ] && exit 0
