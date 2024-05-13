@@ -28,8 +28,8 @@ git_commit_common::
 	@[ -n "$$PRE" ] && exit 0
 	@echo === git commit common =====================================
 	@git add .
-	@[ -n "$$PRE_COMMIT" ] && (git commit -a -m "$$PRE_COMMIT" || true)
-	@[ -n "$$PRE_COMMIT" ] && (git commit -a || true)
+	@[ -n "$$PRE_COMMIT" ] && (git commit -a -m "$$PRE_COMMIT" || true) || true
+	@[ -z "$$PRE_COMMIT" ] && (git commit -a || true) || true
 
 git_push_common:: git_commit_common
 	@[ -n "$$PRE" ] && exit 0
